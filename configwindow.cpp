@@ -53,7 +53,7 @@ void ConfigWindow::OnNFCTagDetected(QString tagId)
   {
     m_trayIcon->showMessage("NFC tag detected", "ID = "+tagId);
   }
-  QString url = "http://host.erasme.org/cloud/rfid/AiADSVTkpd/enter?rfid=" + tagId;
+  QString url = ui->urlHost->text() + "?rfid=" + tagId;
   m_networkManager->get(QNetworkRequest(QUrl(url)));
 }
 

@@ -141,5 +141,4 @@ void RfidTask::run()
     }
   }
   nfc_exit(context);
-  emit finished();
 }
