@@ -22,7 +22,6 @@ FORMS    += configwindow.ui
 INCLUDEPATH += ./include/
 LIBS += -L"$$_PRO_FILE_PWD_/lib/" -llibnfc
 
-QMAKE_CXXFLAGS_WARN_OFF -= -Wunused-parameter
 
 RESOURCES += \
     icon.qrc
