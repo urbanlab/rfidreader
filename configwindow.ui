@@ -63,12 +63,19 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="checkStartup">
         <property name="text">
          <string>Open browser at launch</string>
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkDebug">
+        <property name="text">
+         <string>Show ID values in notifications</string>
         </property>
        </widget>
       </item>

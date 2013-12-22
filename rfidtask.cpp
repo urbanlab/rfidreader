@@ -5,8 +5,6 @@
 #include <QSystemTrayIcon>
 #include <QApplication>
 #include <QMessageBox>
-#include <QtNetwork>
-#include <QtNetwork/QNetworkAccessManager>
 #include <QStyle>
 #include "rfidtask.h"
 
@@ -75,11 +73,8 @@ void RfidTask::run()
 {
   static nfc_context *context;
   static nfc_device *pnd = NULL;
-  //QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-  //QString lasturl="";
   isCurrentTagDetected = false;
 
-  //QMessageBox::information(0,"","Started\n");
   nfc_init(&context);
   if (context == NULL) {
     emit errorDetected("Can't initialize NFC context");
@@ -133,16 +128,8 @@ void RfidTask::run()
       return_id(&s, &nt);
 
       QString sid = QString(s);
-      //if(this->links.contains(sid))
-      /*
-        QString url;
-        //url = this->links.value(sid);
-        url = "http://host.erasme.org/cloud/rfid/AiADSVTkpd/enter?rfid=" + sid;
-        //if(this->links.value(sid)=="e") return;
-        printf("%d ID : %s\nURL : %s\n\n", res, s, url.toStdString().c_str());*/
       if((!isCurrentTagDetected)||(lastTagId!=sid))
       {
-        //manager->get(QNetworkRequest(QUrl(url)));
         lastTagId = sid;
         isCurrentTagDetected = true;
         emit tagDetected(sid);

@@ -2,7 +2,9 @@
 #define CONFIGWINDOW_H
 
 #include <QMainWindow>
+#include <QSettings>
 #include <QSystemTrayIcon>
+#include <QNetworkAccessManager>
 #include <QMenu>
 #include "rfidtask.h"
 
@@ -22,11 +24,23 @@ public slots:
   void OnNFCTagDetected(QString tagId);
   void OnNFCError(QString err);
 
+private slots:
+  void on_checkStartup_toggled(bool checked);
+
+  void on_checkDebug_toggled(bool checked);
+
+  void on_urlStartup_textChanged(const QString &arg1);
+
+  void on_urlHost_textChanged(const QString &arg1);
+
 private:
+  QSettings *m_settings;
   Ui::ConfigWindow *ui;
   QSystemTrayIcon *m_trayIcon;
   QMenu *m_trayMenu;
   RfidTask *m_rfid;
+  QNetworkAccessManager *m_networkManager;
+
 };
 
 #endif // CONFIGWINDOW_H
