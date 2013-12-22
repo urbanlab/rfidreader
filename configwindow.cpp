@@ -1,6 +1,7 @@
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QSettings>
+#include <QDesktopServices>
 
 #include "configwindow.h"
 #include "ui_configwindow.h"
@@ -40,10 +41,13 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
   connect(m_rfid, SIGNAL(errorDetected(QString)), this, SLOT(OnNFCError(QString)));
   connect(ui->exitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
+
   ui->urlStartup->setText(m_settings->value("urlStartUp","http://host.erasme.org").toString());
   ui->urlHost->setText(m_settings->value("urlHOST","http://host.erasme.org:80/cloud/rfid/AiADSVTkpd/enter").toString());
   ui->checkDebug->setChecked(m_settings->value("showTags", false).toBool());
   ui->checkStartup->setChecked(m_settings->value("startBrowser", true).toBool());
+  QDesktopServices::openUrl(ui->urlStartup->text());
+
   m_rfid->start();
 }
 
@@ -69,20 +73,24 @@ ConfigWindow::~ConfigWindow()
 
 void ConfigWindow::on_checkStartup_toggled(bool checked)
 {
+  Q_UNUSED(checked);
   m_settings->setValue("startBrowser", ui->checkStartup->isChecked());
 }
 
 void ConfigWindow::on_checkDebug_toggled(bool checked)
 {
+  Q_UNUSED(checked);
   m_settings->setValue("showTags", ui->checkDebug->isChecked());
 }
 
 void ConfigWindow::on_urlStartup_textChanged(const QString &arg1)
 {
+  Q_UNUSED(arg1);
   m_settings->setValue("urlStartUp", ui->urlStartup->text());
 }
 
 void ConfigWindow::on_urlHost_textChanged(const QString &arg1)
 {
+  Q_UNUSED(arg1);
   m_settings->setValue("urlHOST", ui->urlHost->text());
 }
