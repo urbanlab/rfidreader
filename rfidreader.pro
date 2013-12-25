@@ -22,6 +22,5 @@ FORMS    += configwindow.ui
 INCLUDEPATH += ./include/
 LIBS += -L"$$_PRO_FILE_PWD_/lib/" -llibnfc
 
-
 RESOURCES += \
     icon.qrc

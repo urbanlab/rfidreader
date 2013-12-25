@@ -19,5 +19,4 @@ fi
 ~/Qt/*/*/bin/macdeployqt $2
 #mkdir $2/Contents/Frameworks/lib_nfc_usb
 cp $1/lib/*dylib $2/Contents/Frameworks/
-cd $2/Contents/MacOS/
 hdiutil create -format UDBZ -quiet -srcfolder $2 rfidreader.dmg
