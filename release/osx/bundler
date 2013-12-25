@@ -1,0 +1,23 @@
+#!/bin/bash
+# Usage ./bundler <path_to_sources> <path_to_rfidreader.app>
+#
+# Example:
+#  ./bundler /Users/Yves/rfidreader/ /Users/Yves/tmp/build-rfidreader-Desktop_Qt_5_2_0_clang_64bit-Release/rfidreader.app
+
+E_BADARGS=65
+
+if [ $# -ne 2 ]
+then
+  echo "Usage:"
+  echo "  ./bundler <path_to_sources> <path_to_rfidreader.app>"
+  echo
+  echo "Example:"
+  echo "  ./bundler /Users/Yves/rfidreader/ /Users/Yves/tmp/build-rfidreader-Desktop_Qt_5_2_0_clang_64bit-Release/rfidreader.app"
+  exit $E_BADARGS
+fi
+
+~/Qt/*/*/bin/macdeployqt $2
+#mkdir $2/Contents/Frameworks/lib_nfc_usb
+cp $1/lib/*dylib $2/Contents/Frameworks/
+cd $2/Contents/MacOS/
+hdiutil create -format UDBZ -quiet -srcfolder $2 rfidreader.dmg
