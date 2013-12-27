@@ -46,7 +46,8 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
   ui->urlHost->setText(m_settings->value("urlHOST","http://host.erasme.org:80/cloud/rfid/AiADSVTkpd/enter").toString());
   ui->checkDebug->setChecked(m_settings->value("showTags", false).toBool());
   ui->checkStartup->setChecked(m_settings->value("startBrowser", true).toBool());
-  QDesktopServices::openUrl(ui->urlStartup->text());
+  if(ui->checkStartup->isChecked())
+    QDesktopServices::openUrl(ui->urlStartup->text());
 
   m_rfid->start();
 }
