@@ -33,6 +33,8 @@ private slots:
 
   void on_urlHost_textChanged(const QString &arg1);
 
+  void on_checkAutostart_stateChanged(int arg1);
+
 private:
   QSettings *m_settings;
   Ui::ConfigWindow *ui;

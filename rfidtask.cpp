@@ -95,7 +95,7 @@ void RfidTask::run()
   }
 
 
-  const uint8_t uiPollNr = 20;
+  const uint8_t uiPollNr = 1;
   const uint8_t uiPeriod = 1;
   nfc_modulation nmModulations[5];
   nmModulations[0].nmt = NMT_ISO14443A;

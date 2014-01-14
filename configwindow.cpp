@@ -1,4 +1,5 @@
 #include <QUrl>
+#include <QFile>
 #include <QNetworkRequest>
 #include <QSettings>
 #include <QDesktopServices>
@@ -94,4 +95,16 @@ void ConfigWindow::on_urlHost_textChanged(const QString &arg1)
 {
   Q_UNUSED(arg1);
   m_settings->setValue("urlHOST", ui->urlHost->text());
+}
+
+void ConfigWindow::on_checkAutostart_stateChanged(int arg1)
+{
+  Q_UNUSED(arg1);
+  if(ui->checkAutostart->isChecked())
+  {
+    QFile currentexe(QApplication::instance()->applicationFilePath());
+    QString target = QDesktopServices::displayName(QDesktopServices::ApplicationsLocation);
+    target = target + "\\startup\\rfidtrigger.lnk";
+    currentexe.link(target);
+  }
 }
