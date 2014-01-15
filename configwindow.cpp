@@ -47,6 +47,7 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
   ui->urlHost->setText(m_settings->value("urlHOST","http://host.erasme.org:80/cloud/rfid/AiADSVTkpd/enter").toString());
   ui->checkDebug->setChecked(m_settings->value("showTags", false).toBool());
   ui->checkStartup->setChecked(m_settings->value("startBrowser", true).toBool());
+  ui->checkAutostart->setChecked(m_settings->value("autoRun", false).toBool());
   if(ui->checkStartup->isChecked())
     QDesktopServices::openUrl(ui->urlStartup->text());
 
@@ -100,11 +101,24 @@ void ConfigWindow::on_urlHost_textChanged(const QString &arg1)
 void ConfigWindow::on_checkAutostart_stateChanged(int arg1)
 {
   Q_UNUSED(arg1);
-  if(ui->checkAutostart->isChecked())
+  #ifdef Q_WS_WIN
+  QSettings bootUpSettings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+  QSettings bootUpSettings2("HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+
+  if (ui->checkAutostart->isChecked())
   {
-    QFile currentexe(QApplication::instance()->applicationFilePath());
-    QString target = QDesktopServices::displayName(QDesktopServices::ApplicationsLocation);
-    target = target + "\\startup\\rfidtrigger.lnk";
-    currentexe.link(target);
+      bootUpSettings.setValue("RfidTrigger",QCoreApplication::applicationFilePath().replace('/','\\'));
+      bootUpSettings2.setValue("RfidTrigger",QCoreApplication::applicationFilePath().replace('/','\\'));
   }
+  else
+  {
+    bootUpSettings.remove("RfidTrigger");
+    bootUpSettings2.remove("RfidTrigger");
+  }
+  m_settings->setValue("autoRun", ui->checkAutostart->isChecked());
+  #endif
+  /*QFile currentexe(QApplication::instance()->applicationFilePath());
+  QString target = QDesktopServices::displayName(QDesktopServices::ApplicationsLocation);
+  target = target + "\\startup\\rfidtrigger.lnk";
+  currentexe.link(target);*/
 }
