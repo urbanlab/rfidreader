@@ -13,6 +13,7 @@ public:
     QString lastTagId;
     bool isCurrentTagDetected;
     bool showTagId;
+    bool stop;
 
     void run();
 

@@ -74,6 +74,7 @@ void RfidTask::run()
   static nfc_context *context;
   static nfc_device *pnd = NULL;
   isCurrentTagDetected = false;
+  stop = false;
 
   nfc_init(&context);
   if (context == NULL) {
@@ -81,18 +82,7 @@ void RfidTask::run()
     return;
   }
 
-  pnd = nfc_open(context, NULL);
-  if (!pnd) {
-    emit errorDetected("Can't open NFC device");
-    nfc_exit(context);
-    return;
-  }
 
-  if (nfc_initiator_init(pnd) < 0) {
-    emit errorDetected("Can't initialize NFC device");
-    nfc_exit(context);
-    return;
-  }
 
 
   const uint8_t uiPollNr = 1;
@@ -110,8 +100,31 @@ void RfidTask::run()
   nmModulations[4].nbr = NBR_106;
   const size_t szModulations = 5;
   nfc_target nt;
-  while(1)
+  while(!stop)
   {
+
+      if (!pnd) {
+          pnd = nfc_open(context, NULL);
+          if(!pnd)
+          {
+              emit errorDetected("Can't open NFC device");
+              //nfc_exit(context);
+              //return;
+              for(int i=0;i<200 && !stop;i++)
+                  msleep(10);
+              continue;
+          }
+          if (nfc_initiator_init(pnd) < 0) {
+              emit errorDetected("Can't initialize NFC device");
+              //nfc_exit(context);
+              //return;
+              pnd=0;
+              continue;
+          }
+      }
+
+
+
     int res = nfc_initiator_poll_target(pnd,
                                         nmModulations,
                                         szModulations,

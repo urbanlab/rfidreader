@@ -71,7 +71,9 @@ void ConfigWindow::OnNFCError(QString err)
 
 ConfigWindow::~ConfigWindow()
 {
-  delete ui;
+    m_rfid->stop=true;
+    m_rfid->wait();
+    delete ui;
 }
 
 void ConfigWindow::on_checkStartup_toggled(bool checked)
