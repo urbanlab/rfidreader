@@ -20,4 +20,5 @@ public:
 signals:
     void tagDetected(QString id);
     void errorDetected(QString err);
+    void readerReady();
 };

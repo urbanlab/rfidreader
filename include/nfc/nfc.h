@@ -31,9 +31,6 @@
  * Provide all usefull functions (API) to handle NFC devices.
  */
 
-#undef WIN32
-#undef _WIN32
-
 #ifndef _LIBNFC_H_
 #  define _LIBNFC_H_
 

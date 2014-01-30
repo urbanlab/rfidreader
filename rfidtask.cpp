@@ -8,6 +8,8 @@
 #include <QStyle>
 #include "rfidtask.h"
 
+typedef char connstring_t[1024];
+
 void return_id(char ** dst, const nfc_target *pnt)
 {
   int i;
@@ -100,22 +102,45 @@ void RfidTask::run()
   nmModulations[4].nbr = NBR_106;
   const size_t szModulations = 5;
   nfc_target nt;
+  int attempts = 5;
+  bool first_after_init = true;
+  bool first_fail = true;
   while(!stop)
   {
 
       if (!pnd) {
-          pnd = nfc_open(context, NULL);
+          //pnd = nfc_open(context, "acr122_usb:003:003-072f-2200-00-00");
+          //pnd = nfc_open(context, "acr122_pcsc");
+          //pnd = nfc_open(context, "pn53x_usb");
+          //pnd = nfc_open(context, "acr122_usb");
+          connstring_t cs[10];
+          nfc_list_devices(context, &cs[0], 10);
+          int preferedi=0;
+          for(int i=0;i<10;i++)
+          {
+
+              if(strstr(cs[i],"pcsc")!=0)
+                  preferedi=i;
+          }
+          printf("Trying to open %d: %s\n", preferedi, cs[preferedi]);
+          pnd = nfc_open(context, cs[preferedi]);
           if(!pnd)
           {
-              emit errorDetected("Can't open NFC device");
               //nfc_exit(context);
               //return;
-              for(int i=0;i<200 && !stop;i++)
+              for(int i=0;i<100 && !stop;i++)
                   msleep(10);
+              if(attempts-->0)
+                  continue;
+              if(first_fail)
+                  emit errorDetected("Can't open NFC device");
+              first_fail = false;
               continue;
           }
           if (nfc_initiator_init(pnd) < 0) {
-              emit errorDetected("Can't initialize NFC device");
+              if(first_fail)
+                  emit errorDetected("Can't initialize NFC device");
+              first_fail = false;
               //nfc_exit(context);
               //return;
               pnd=0;
@@ -123,8 +148,11 @@ void RfidTask::run()
           }
       }
 
-
-
+    if(first_after_init)
+    {
+        emit readerReady();
+        first_after_init = false;
+    }
     int res = nfc_initiator_poll_target(pnd,
                                         nmModulations,
                                         szModulations,
@@ -153,5 +181,14 @@ void RfidTask::run()
       isCurrentTagDetected=false;
     }
   }
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
+  nfc_exit(context);
   nfc_exit(context);
 }

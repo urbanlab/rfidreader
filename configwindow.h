@@ -23,6 +23,7 @@ public:
 public slots:
   void OnNFCTagDetected(QString tagId);
   void OnNFCError(QString err);
+  void OnReaderReady();
 
 private slots:
   void on_checkStartup_toggled(bool checked);
