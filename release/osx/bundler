@@ -16,7 +16,7 @@ then
   exit $E_BADARGS
 fi
 
-~/Qt/*/*/bin/macdeployqt $2
+~/Qt*/*/*/bin/macdeployqt $2
 #mkdir $2/Contents/Frameworks/lib_nfc_usb
 cp $1/lib/*dylib $2/Contents/Frameworks/
 hdiutil create -format UDBZ -quiet -srcfolder $2 rfidreader.dmg

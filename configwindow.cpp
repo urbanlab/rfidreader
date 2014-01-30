@@ -1,8 +1,11 @@
 #include <QUrl>
 #include <QFile>
+#include <QDir>
 #include <QNetworkRequest>
 #include <QSettings>
 #include <QDesktopServices>
+#include <QCloseEvent>
+#include <QMessageBox>
 
 #include "configwindow.h"
 #include "ui_configwindow.h"
@@ -37,11 +40,11 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
   //m_trayIcon->showMessage("RFID reader", "Ready", QSystemTrayIcon::NoIcon, 3000);
 
   connect(showConfig, SIGNAL(triggered()), this, SLOT(showNormal()));
-  connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+  connect(exitAction, SIGNAL(triggered()), this, SLOT(wait_for_thread_then_quit()));
   connect(m_rfid, SIGNAL(tagDetected(QString)), this, SLOT(OnNFCTagDetected(QString)));
   connect(m_rfid, SIGNAL(errorDetected(QString)), this, SLOT(OnNFCError(QString)));
-  connect(ui->exitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
-
+  connect(m_rfid, SIGNAL(readerReady()), this, SLOT(OnReaderReady()));
+  connect(ui->exitButton, SIGNAL(clicked()), this, SLOT(wait_for_thread_then_quit()));
 
   ui->urlStartup->setText(m_settings->value("urlStartUp","http://host.erasme.org").toString());
   ui->urlHost->setText(m_settings->value("urlHOST","http://host.erasme.org:80/cloud/rfid/AiADSVTkpd/enter").toString());
@@ -77,10 +80,24 @@ void ConfigWindow::OnNFCError(QString err)
   m_trayIcon->showMessage("RFID reader error", err);
 }
 
+void ConfigWindow::wait_for_thread_then_quit()
+{
+    if((m_rfid)&&(m_rfid->isRunning()))
+    {
+        m_rfid->stop=true;
+        m_rfid->wait(5000);
+        m_rfid->quit();
+    }
+    qApp->quit();
+}
+
+void ConfigWindow::closeEvent(QCloseEvent *evt)
+{
+    evt->accept();
+}
+
 ConfigWindow::~ConfigWindow()
 {
-    m_rfid->stop=true;
-    m_rfid->wait();
     delete ui;
 }
 
@@ -125,10 +142,28 @@ void ConfigWindow::on_checkAutostart_stateChanged(int arg1)
     bootUpSettings.remove("RfidTrigger");
     bootUpSettings2.remove("RfidTrigger");
   }
-  m_settings->setValue("autoRun", ui->checkAutostart->isChecked());
   #endif
-  /*QFile currentexe(QApplication::instance()->applicationFilePath());
-  QString target = QDesktopServices::displayName(QDesktopServices::ApplicationsLocation);
-  target = target + "\\startup\\rfidtrigger.lnk";
-  currentexe.link(target);*/
+  #ifdef Q_OS_MACX
+
+  fflush(stdout);
+  if(ui->checkAutostart->isChecked())
+  {
+      QFile * conffile = new QFile(QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0] + "/Library/LaunchAgents/com.erasme.rfidreader.plist");
+      conffile->open(QFile::WriteOnly | QFile::Text);
+      QFile * model = new QFile(":/conf/osx/autostart");
+      model->open(QFile::ReadOnly | QFile::Text);
+      QTextStream ts(model);
+      QString s = ts.readAll();
+      s.replace("PATH", QCoreApplication::applicationFilePath());
+
+      conffile->write(s.toStdString().c_str());
+      conffile->close();
+  }
+  else
+  {
+      QDir confdir(QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0] + "/Library/LaunchAgents/");
+      confdir.remove("com.erasme.rfidreader.plist");
+  }
+  #endif
+  m_settings->setValue("autoRun", ui->checkAutostart->isChecked());
 }

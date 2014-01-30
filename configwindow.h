@@ -36,7 +36,12 @@ private slots:
 
   void on_checkAutostart_stateChanged(int arg1);
 
+  void wait_for_thread_then_quit();
+
 private:
+  void closeEvent(QCloseEvent *);
+
+
   QSettings *m_settings;
   Ui::ConfigWindow *ui;
   QSystemTrayIcon *m_trayIcon;

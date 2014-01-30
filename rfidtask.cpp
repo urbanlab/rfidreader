@@ -176,19 +176,14 @@ void RfidTask::run()
         emit tagDetected(sid);
       }
 
-      free(s);
+      //free(s);
     } else {
       isCurrentTagDetected=false;
     }
   }
+
+  //nfc_abort_command(pnd);
+  nfc_close(pnd);
   nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
-  nfc_exit(context);
+  this->exit();
 }

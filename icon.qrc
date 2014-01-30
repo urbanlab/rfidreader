@@ -2,4 +2,7 @@
     <qresource prefix="/icon">
         <file alias="trayicon">icon/NFC_Icon.svg</file>
     </qresource>
+    <qresource prefix="/conf">
+        <file alias="osx/autostart">osx/com.erasme.rfidreader.plist</file>
+    </qresource>
 </RCC>
