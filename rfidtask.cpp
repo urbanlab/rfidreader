@@ -80,7 +80,7 @@ void RfidTask::run()
 
   nfc_init(&context);
   if (context == NULL) {
-    emit errorDetected("Can't initialize NFC context");
+    emit errorDetected(tr("Can't initialize NFC context"));
     return;
   }
 
@@ -133,13 +133,13 @@ void RfidTask::run()
               if(attempts-->0)
                   continue;
               if(first_fail)
-                  emit errorDetected("Can't open NFC device");
+                  emit errorDetected(tr("Can't open NFC device"));
               first_fail = false;
               continue;
           }
           if (nfc_initiator_init(pnd) < 0) {
               if(first_fail)
-                  emit errorDetected("Can't initialize NFC device");
+                  emit errorDetected(tr("Can't initialize NFC device"));
               first_fail = false;
               //nfc_exit(context);
               //return;

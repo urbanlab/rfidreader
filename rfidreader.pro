@@ -28,3 +28,5 @@ win32{
 
 RESOURCES += \
     icon.qrc
+
+TRANSLATIONS += rfidreader-fr.ts

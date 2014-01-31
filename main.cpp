@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QMessageBox>
+#include <QTranslator>
 
 #include "configwindow.h"
 
@@ -10,6 +11,10 @@ int main(int argc, char *argv[])
   Q_INIT_RESOURCE(icon);
 
   QApplication a(argc, argv);
+  QTranslator translator;
+  translator.load("rfidreader-fr");
+  a.installTranslator(&translator);
+
   if (!QSystemTrayIcon::isSystemTrayAvailable()) {
       QMessageBox::critical(0, QObject::tr("Systray"),
                             QObject::tr("I couldn't detect any system tray "

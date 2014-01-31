@@ -26,10 +26,10 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
   m_networkManager = new QNetworkAccessManager(this);
 
   m_trayMenu = new QMenu(this);
-  showConfig = new QAction("Configuration", this);
+  showConfig = new QAction(tr("Configuration"), this);
   m_trayMenu->addAction(showConfig);
 
-  exitAction = new QAction("Exit", this);
+  exitAction = new QAction(tr("Exit"), this);
   m_trayMenu->addAction(exitAction);
 
   m_trayIcon = new QSystemTrayIcon(this);
@@ -61,7 +61,7 @@ void ConfigWindow::OnNFCTagDetected(QString tagId)
 {
   if(ui->checkDebug->isChecked())
   {
-    m_trayIcon->showMessage("NFC tag detected", "ID = "+tagId);
+    m_trayIcon->showMessage(tr("NFC tag detected"), "ID = "+tagId);
   }
   QString url = ui->urlHost->text() + "?rfid=" + tagId;
   m_networkManager->get(QNetworkRequest(QUrl(url)));
@@ -71,13 +71,13 @@ void ConfigWindow::OnReaderReady()
 {
   if(ui->checkDebug->isChecked())
   {
-    m_trayIcon->showMessage("NFC reader ready", "");
+    m_trayIcon->showMessage(tr("NFC reader ready"), "");
   }
 }
 
 void ConfigWindow::OnNFCError(QString err)
 {
-  m_trayIcon->showMessage("RFID reader error", err);
+  m_trayIcon->showMessage(tr("RFID reader error"), err);
 }
 
 void ConfigWindow::wait_for_thread_then_quit()
