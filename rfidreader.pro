@@ -20,10 +20,10 @@ HEADERS  += rfidtask.h\
 FORMS    += configwindow.ui
 
 INCLUDEPATH += ./include/
-macx{
-    LIBS += -L"$$_PRO_FILE_PWD_/lib/" -lnfc
+win32{
+	LIBS += -L"$$_PRO_FILE_PWD_/lib/" -llibnfc
 } else {
-    LIBS += -L"$$_PRO_FILE_PWD_/lib/" -llibnfc
+	LIBS += -L"$$_PRO_FILE_PWD_/lib/" -lnfc
 }
 
 RESOURCES += \
