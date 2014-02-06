@@ -5,5 +5,6 @@
     </qresource>
     <qresource prefix="/conf">
         <file alias="osx/autostart">osx/com.erasme.rfidreader.plist</file>
+        <file alias="trad-fr">rfidreader-fr.qm</file>
     </qresource>
 </RCC>

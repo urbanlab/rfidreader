@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
   QApplication a(argc, argv);
   QTranslator translator;
-  translator.load("rfidreader-fr");
+  translator.load(":/conf/trad-fr");
   a.installTranslator(&translator);
 
   if (!QSystemTrayIcon::isSystemTrayAvailable()) {
