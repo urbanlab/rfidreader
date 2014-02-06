@@ -1,6 +1,15 @@
 import sys
 import os.path
 
+def examine_dylib(path):
+    (stin, stout) = os.popen2("otool -L "+apppath+path)#"/Contents/Frameworks/libnfc*dylib")
+    s = stout.read()
+    repmap=dict()
+    for ss in s.split("\n")[2:]:
+	ss = ss.lstrip()
+        if ss.startswith("/opt/") or ss.startswith("/Users/"):
+            print "WARNING: Please take care of this dependence in {0} : {1}".format(path,ss)        
+
 # check argument
 if len(sys.argv)!=3:
     print """Usage:
@@ -23,22 +32,32 @@ p = os.path.expanduser("~")
 macdeploypath=""
 for fn in os.listdir(p):
     if fn.startswith("Qt"):
-        p2=p+"/"+fn+"/"
-        print p2
-        for fn2 in os.listdir(p2):
-            #Look at the path structure
-            ...
+        p2=p+"/"+fn
+        if os.path.isdir(p2):
+	    print p2
+            for fn2 in os.listdir(p2):
+                p3 = p2+"/"+fn2
+		if os.path.isdir(p3):
+		    for fn3 in os.listdir(p3):
+			p4 = p3+"/"+fn3
+			if os.path.isdir(p4):
+			    for fn4 in os.listdir(p4):
+				if fn4=="bin":
+				    macdeploypath = p4 + "/" + fn4 + "/macdeployqt"
+if os.path.exists(macdeploypath):
+    print "Found macdeployqt : " + macdeploypath
+else:
+    print "Error: Could not find macdeployqt"
+    exit()			    
 
 # copy dylibs from libs/ to Frameworks/
 os.system("cp "+srcpath+"/lib/*.dylib "+apppath+"/Contents/Frameworks/")
 # start macdeployqt
 os.system(macdeploypath + " " + apppath)
 # get result from otool -L rfidreader
-(sin, sout) = os.popen2("otool -L "+apppath+"/Contents/MacOS/rfidreader")
-s = sout.read().split("\n")
-repmap=dict()
-for ss in s:
-    if ss.startswith("/opt/") or ss.startswith("/Users/"):
-        
+#(stin, stout) = os.popen2("otool -L "+apppath+"/Contents/MacOS/rfidreader")
+examine_dylib("/Contents/Frameworks/libnfc.dylib")
+examine_dylib("/Contents/Frameworks/libusb-legacy.dylib")
+examine_dylib("/Contents/MacOS/rfidreader")
 
-# find libs in /opt/ or /Users and replace them with @executable_path/../Frameworks/...
+os.system("hdiutil create -format UDBZ -quiet -srcfolder "+apppath+" rfidreader.dmg")
